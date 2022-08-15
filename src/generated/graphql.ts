@@ -16,30 +16,6 @@ export type Scalars = {
   DateTime: any;
 };
 
-export type Assessment = {
-  __typename?: 'Assessment';
-  assessmentDate: Scalars['DateTime'];
-  createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  owner: User;
-  ownerId: Scalars['String'];
-  taxPayerName: Scalars['String'];
-  taxPayerReference: Scalars['String'];
-  taxPeriod: Scalars['String'];
-  taxType: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
-};
-
-export type AssessmentInput = {
-  assessmentDate: Scalars['DateTime'];
-  name: Scalars['String'];
-  taxPayerName: Scalars['String'];
-  taxPayerReference: Scalars['String'];
-  taxPeriod: Scalars['String'];
-  taxType: Scalars['String'];
-};
-
 export type AuthenticationInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -56,16 +32,46 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type FishCaught = {
+  __typename?: 'FishCaught';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  length?: Maybe<Scalars['Float']>;
+  location?: Maybe<Scalars['String']>;
+  notes?: Maybe<Scalars['String']>;
+  species: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  userId: Scalars['ID'];
+  weight?: Maybe<Scalars['Float']>;
+};
+
+export type FishCaughtInput = {
+  length?: InputMaybe<Scalars['Float']>;
+  location?: InputMaybe<Scalars['String']>;
+  notes?: InputMaybe<Scalars['String']>;
+  species: Scalars['String'];
+  weight?: InputMaybe<Scalars['Float']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addProfileInformation: ProfileInformationResponse;
   changePassword: UserResponse;
-  createAssessment: Assessment;
-  deleteAssessment: Scalars['Boolean'];
+  createFishCaught: FishCaught;
+  deleteFishCaught: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   login?: Maybe<UserResponse>;
   logout: Scalars['Boolean'];
+  logoutAll: Scalars['Boolean'];
   register: UserResponse;
-  updateAssessment?: Maybe<Assessment>;
+  setUsername: Scalars['Boolean'];
+  updateFishCaught?: Maybe<FishCaught>;
+};
+
+
+export type MutationAddProfileInformationArgs = {
+  filename: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
@@ -74,12 +80,12 @@ export type MutationChangePasswordArgs = {
 };
 
 
-export type MutationCreateAssessmentArgs = {
-  input: AssessmentInput;
+export type MutationCreateFishCaughtArgs = {
+  input: FishCaughtInput;
 };
 
 
-export type MutationDeleteAssessmentArgs = {
+export type MutationDeleteFishCaughtArgs = {
   id: Scalars['String'];
 };
 
@@ -99,38 +105,57 @@ export type MutationRegisterArgs = {
 };
 
 
-export type MutationUpdateAssessmentArgs = {
+export type MutationSetUsernameArgs = {
+  username: Scalars['String'];
+};
+
+
+export type MutationUpdateFishCaughtArgs = {
   id: Scalars['String'];
-  input: AssessmentInput;
+  input: FishCaughtInput;
+};
+
+export type ProfileInformationResponse = {
+  __typename?: 'ProfileInformationResponse';
+  error?: Maybe<Scalars['String']>;
+  signedURL?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  assessment?: Maybe<Assessment>;
-  assessments: Array<Assessment>;
-  assessmentsForOwner?: Maybe<Array<Assessment>>;
+  fish?: Maybe<FishCaught>;
+  fishCaughtForOwner?: Maybe<Array<FishCaught>>;
+  fishes: Array<FishCaught>;
+  isUsernameAvailable: Scalars['Boolean'];
   me?: Maybe<User>;
 };
 
 
-export type QueryAssessmentArgs = {
+export type QueryFishArgs = {
   id: Scalars['String'];
 };
 
 
-export type QueryAssessmentsForOwnerArgs = {
-  ownerId: Scalars['String'];
+export type QueryFishCaughtForOwnerArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type QueryIsUsernameAvailableArgs = {
+  username: Scalars['String'];
 };
 
 export type User = {
   __typename?: 'User';
-  assessments: Array<Assessment>;
   /** True if user has activated/confirmed their account */
   confirmed: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
+  /** Locked out due to Forgot Password */
+  forgotPasswordLocked: Scalars['Boolean'];
   id: Scalars['ID'];
   updatedAt: Scalars['DateTime'];
+  username?: Maybe<Scalars['String']>;
 };
 
 export type UserResponse = {
@@ -141,16 +166,31 @@ export type UserResponse = {
 
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type RegularUserFragment = { __typename?: 'User', id: string, email: string };
+export type RegularUserFragment = { __typename?: 'User', id: string, email: string, username?: string | null };
 
-export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string } | null };
+export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string, username?: string | null } | null };
+
+export type AddProfileInformationMutationVariables = Exact<{
+  filename: Scalars['String'];
+  username: Scalars['String'];
+}>;
+
+
+export type AddProfileInformationMutation = { __typename?: 'Mutation', addProfileInformation: { __typename?: 'ProfileInformationResponse', error?: string | null, signedURL?: string | null } };
 
 export type ChangePasswordMutationVariables = Exact<{
   data: ChangePasswordInput;
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string } | null } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: string, email: string, username?: string | null } | null } };
+
+export type CreateFishCaughtMutationVariables = Exact<{
+  input: FishCaughtInput;
+}>;
+
+
+export type CreateFishCaughtMutation = { __typename?: 'Mutation', createFishCaught: { __typename?: 'FishCaught', id: string, userId: string, species: string, weight?: number | null, length?: number | null, location?: string | null, notes?: string | null, createdAt: any, updatedAt: any } };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
@@ -178,10 +218,36 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: string, email: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
+export type SetUsernameMutationVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type SetUsernameMutation = { __typename?: 'Mutation', setUsername: boolean };
+
+export type FishQueryVariables = Exact<{
+  fishId: Scalars['String'];
+}>;
+
+
+export type FishQuery = { __typename?: 'Query', fish?: { __typename?: 'FishCaught', id: string, userId: string, species: string, weight?: number | null, length?: number | null, location?: string | null, notes?: string | null } | null };
+
+export type FishesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FishesQuery = { __typename?: 'Query', fishes: Array<{ __typename?: 'FishCaught', id: string, species: string, weight?: number | null, length?: number | null, location?: string | null, notes?: string | null }> };
+
+export type IsUsernameAvailableQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type IsUsernameAvailableQuery = { __typename?: 'Query', isUsernameAvailable: boolean };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, email: string } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, email: string, username?: string | null } | null };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -193,6 +259,7 @@ export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
   email
+  username
 }
     `;
 export const RegularUserResponseFragmentDoc = gql`
@@ -206,6 +273,18 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularErrorFragmentDoc}
 ${RegularUserFragmentDoc}`;
+export const AddProfileInformationDocument = gql`
+    mutation AddProfileInformation($filename: String!, $username: String!) {
+  addProfileInformation(filename: $filename, username: $username) {
+    error
+    signedURL
+  }
+}
+    `;
+
+export function useAddProfileInformationMutation() {
+  return Urql.useMutation<AddProfileInformationMutation, AddProfileInformationMutationVariables>(AddProfileInformationDocument);
+};
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($data: ChangePasswordInput!) {
   changePassword(data: $data) {
@@ -216,6 +295,25 @@ export const ChangePasswordDocument = gql`
 
 export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const CreateFishCaughtDocument = gql`
+    mutation CreateFishCaught($input: FishCaughtInput!) {
+  createFishCaught(input: $input) {
+    id
+    userId
+    species
+    weight
+    length
+    location
+    notes
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export function useCreateFishCaughtMutation() {
+  return Urql.useMutation<CreateFishCaughtMutation, CreateFishCaughtMutationVariables>(CreateFishCaughtDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
@@ -270,6 +368,57 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const SetUsernameDocument = gql`
+    mutation SetUsername($username: String!) {
+  setUsername(username: $username)
+}
+    `;
+
+export function useSetUsernameMutation() {
+  return Urql.useMutation<SetUsernameMutation, SetUsernameMutationVariables>(SetUsernameDocument);
+};
+export const FishDocument = gql`
+    query Fish($fishId: String!) {
+  fish(id: $fishId) {
+    id
+    userId
+    species
+    weight
+    length
+    location
+    notes
+  }
+}
+    `;
+
+export function useFishQuery(options: Omit<Urql.UseQueryArgs<FishQueryVariables>, 'query'>) {
+  return Urql.useQuery<FishQuery, FishQueryVariables>({ query: FishDocument, ...options });
+};
+export const FishesDocument = gql`
+    query Fishes {
+  fishes {
+    id
+    species
+    weight
+    length
+    location
+    notes
+  }
+}
+    `;
+
+export function useFishesQuery(options?: Omit<Urql.UseQueryArgs<FishesQueryVariables>, 'query'>) {
+  return Urql.useQuery<FishesQuery, FishesQueryVariables>({ query: FishesDocument, ...options });
+};
+export const IsUsernameAvailableDocument = gql`
+    query isUsernameAvailable($username: String!) {
+  isUsernameAvailable(username: $username)
+}
+    `;
+
+export function useIsUsernameAvailableQuery(options: Omit<Urql.UseQueryArgs<IsUsernameAvailableQueryVariables>, 'query'>) {
+  return Urql.useQuery<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>({ query: IsUsernameAvailableDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {
