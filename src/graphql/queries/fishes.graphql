@@ -1,0 +1,10 @@
+query Fishes {
+  fishes {
+    id
+    species
+    weight
+    length
+    location
+    notes
+  }
+}

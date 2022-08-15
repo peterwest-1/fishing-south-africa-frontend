@@ -1,0 +1,11 @@
+query Fish($fishId: String!) {
+  fish(id: $fishId) {
+    id
+    userId
+    species
+    weight
+    length
+    location
+    notes
+  }
+}

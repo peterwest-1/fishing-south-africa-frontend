@@ -1,0 +1,13 @@
+mutation CreateFishCaught($input: FishCaughtInput!) {
+  createFishCaught(input: $input) {
+    id
+    userId
+    species
+    weight
+    length
+    location
+    notes
+    createdAt
+    updatedAt
+  }
+}
