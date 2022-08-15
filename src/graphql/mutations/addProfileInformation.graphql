@@ -1,0 +1,6 @@
+mutation AddProfileInformation($filename: String!, $username: String!) {
+  addProfileInformation(filename: $filename, username: $username) {
+    error
+    signedURL
+  }
+}

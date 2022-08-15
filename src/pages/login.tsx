@@ -1,30 +1,16 @@
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Heading,
-  Input,
-  Spacer,
-  Spinner,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading, Spacer, Spinner } from "@chakra-ui/react";
 
-import { Field, Form, Formik } from "formik";
+import { Link } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import LinkButton from "../components/LinkButton";
-import PasswordInput from "../components/PasswordInput";
+import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
-import { Link } from "@chakra-ui/react";
-import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { AuthenticationInput, useLoginMutation } from "../generated/graphql";
 import { createURQLClient } from "../util/createURQLClient";
 import { toErrorMap } from "../util/toErrorMap";
-import NextLink from "next/link";
-import { InputField } from "../components/InputField";
 
 interface LoginProps {}
 
@@ -32,7 +18,7 @@ const Login: React.FC<LoginProps> = ({}) => {
   const initialValues: AuthenticationInput = { email: "", password: "" };
   const router = useRouter();
 
-  const [{ data, fetching, error }, login] = useLoginMutation();
+  const [{ fetching, error }, login] = useLoginMutation();
   if (fetching) {
     return <Spinner />;
   }

@@ -1,0 +1,3 @@
+mutation SetUsername($username: String!) {
+  setUsername(username: $username)
+}
