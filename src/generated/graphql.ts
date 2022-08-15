@@ -53,12 +53,19 @@ export type FishCaughtInput = {
   weight?: InputMaybe<Scalars['Float']>;
 };
 
+export type FishCaughtResponse = {
+  __typename?: 'FishCaughtResponse';
+  errors?: Maybe<Array<FieldError>>;
+  fishCaught?: Maybe<FishCaught>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  addProfileInformation: ProfileInformationResponse;
+  addProfileInformation: SignedUrlResponse;
   changePassword: UserResponse;
-  createFishCaught: FishCaught;
+  createFishCaught: FishCaughtResponse;
   deleteFishCaught: Scalars['Boolean'];
+  fishImageUploadURL: SignedUrlResponse;
   forgotPassword: Scalars['Boolean'];
   login?: Maybe<UserResponse>;
   logout: Scalars['Boolean'];
@@ -90,6 +97,11 @@ export type MutationDeleteFishCaughtArgs = {
 };
 
 
+export type MutationFishImageUploadUrlArgs = {
+  fishCaughtId: Scalars['String'];
+};
+
+
 export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
 };
@@ -115,12 +127,6 @@ export type MutationUpdateFishCaughtArgs = {
   input: FishCaughtInput;
 };
 
-export type ProfileInformationResponse = {
-  __typename?: 'ProfileInformationResponse';
-  error?: Maybe<Scalars['String']>;
-  signedURL?: Maybe<Scalars['String']>;
-};
-
 export type Query = {
   __typename?: 'Query';
   fish?: Maybe<FishCaught>;
@@ -143,6 +149,12 @@ export type QueryFishCaughtForOwnerArgs = {
 
 export type QueryIsUsernameAvailableArgs = {
   username: Scalars['String'];
+};
+
+export type SignedUrlResponse = {
+  __typename?: 'SignedURLResponse';
+  error?: Maybe<Scalars['String']>;
+  signedURL?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -176,7 +188,7 @@ export type AddProfileInformationMutationVariables = Exact<{
 }>;
 
 
-export type AddProfileInformationMutation = { __typename?: 'Mutation', addProfileInformation: { __typename?: 'ProfileInformationResponse', error?: string | null, signedURL?: string | null } };
+export type AddProfileInformationMutation = { __typename?: 'Mutation', addProfileInformation: { __typename?: 'SignedURLResponse', error?: string | null, signedURL?: string | null } };
 
 export type ChangePasswordMutationVariables = Exact<{
   data: ChangePasswordInput;
@@ -190,7 +202,14 @@ export type CreateFishCaughtMutationVariables = Exact<{
 }>;
 
 
-export type CreateFishCaughtMutation = { __typename?: 'Mutation', createFishCaught: { __typename?: 'FishCaught', id: string, userId: string, species: string, weight?: number | null, length?: number | null, location?: string | null, notes?: string | null, createdAt: any, updatedAt: any } };
+export type CreateFishCaughtMutation = { __typename?: 'Mutation', createFishCaught: { __typename?: 'FishCaughtResponse', fishCaught?: { __typename?: 'FishCaught', id: string, userId: string, species: string, weight?: number | null, length?: number | null, location?: string | null, notes?: string | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type FishImageUploadUrlMutationVariables = Exact<{
+  fishCaughtId: Scalars['String'];
+}>;
+
+
+export type FishImageUploadUrlMutation = { __typename?: 'Mutation', fishImageUploadURL: { __typename?: 'SignedURLResponse', signedURL?: string | null, error?: string | null } };
 
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
@@ -299,21 +318,37 @@ export function useChangePasswordMutation() {
 export const CreateFishCaughtDocument = gql`
     mutation CreateFishCaught($input: FishCaughtInput!) {
   createFishCaught(input: $input) {
-    id
-    userId
-    species
-    weight
-    length
-    location
-    notes
-    createdAt
-    updatedAt
+    fishCaught {
+      id
+      userId
+      species
+      weight
+      length
+      location
+      notes
+    }
+    errors {
+      field
+      message
+    }
   }
 }
     `;
 
 export function useCreateFishCaughtMutation() {
   return Urql.useMutation<CreateFishCaughtMutation, CreateFishCaughtMutationVariables>(CreateFishCaughtDocument);
+};
+export const FishImageUploadUrlDocument = gql`
+    mutation FishImageUploadURL($fishCaughtId: String!) {
+  fishImageUploadURL(fishCaughtId: $fishCaughtId) {
+    signedURL
+    error
+  }
+}
+    `;
+
+export function useFishImageUploadUrlMutation() {
+  return Urql.useMutation<FishImageUploadUrlMutation, FishImageUploadUrlMutationVariables>(FishImageUploadUrlDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {

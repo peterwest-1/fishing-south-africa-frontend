@@ -1,0 +1,6 @@
+mutation FishImageUploadURL($fishCaughtId: String!) {
+  fishImageUploadURL(fishCaughtId: $fishCaughtId) {
+    signedURL
+    error
+  }
+}
